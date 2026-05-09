@@ -1,0 +1,35 @@
+Based on the following analysis of {student_name}'s Semester {semester} result:
+
+METRICS:
+- Percentage: {percentage}%
+- SGPA: {sgpa}
+- Status: {overall_status}
+- Backlogs: {backlogs}
+- Strong subjects: {strength_subjects}
+- Weak subjects: {weak_subjects}
+
+SUBJECT-WISE BREAKDOWN:
+{subject_breakdown}
+
+PERFORMANCE LEVEL: {performance_level}
+IMPROVEMENT SUGGESTION: {improvement_suggestion}
+
+Write a structured summary of this student's result as bullet points.
+Address the student directly (use "you" and "your").
+
+Format your response EXACTLY like this (use • for bullet markers):
+
+• [Overall result: Pass/Fail, percentage, SGPA in one line]
+• [Best performing subject with score]
+• [Second best subject if applicable]
+• [Weakest subject and what to focus on]
+• [One specific actionable study tip]
+• [Short motivational closing line]
+
+Rules:
+- Use 5-7 bullet points maximum
+- Each bullet point should be ONE concise sentence
+- Start each line with •
+- Do NOT use sub-bullets or nested lists
+- Do NOT add headers or extra formatting
+- Be specific — mention actual subject names and scores

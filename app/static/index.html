@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEU Result Intelligence Assistant</title>
+    <meta name="description" content="AI-powered exam result analysis for Bihar Engineering University students">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Animated background orbs -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Main layout wrapper -->
+    <div class="layout-wrapper" id="layout-wrapper">
+
+        <!-- Main Content Column -->
+        <div class="main-column">
+            <!-- Header -->
+            <header class="app-header" id="app-header">
+                <div class="logo-group">
+                    <div class="logo-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="app-title">BEU Result AI</h1>
+                        <p class="app-subtitle">Bihar Engineering University</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Input Section -->
+            <section class="input-section" id="input-section">
+                <div class="input-card glass-card">
+                    <h2 class="section-heading">Check Your Result</h2>
+                    <p class="section-desc">Enter your registration number and semester to get a detailed AI-powered analysis of your performance.</p>
+                    
+                    <form id="result-form" class="result-form">
+                        <div class="form-group">
+                            <label for="reg-no" class="form-label">Registration Number</label>
+                            <input 
+                                type="text" 
+                                id="reg-no" 
+                                class="form-input" 
+                                placeholder="e.g. 24153125054"
+                                required
+                                pattern="\d{10,12}"
+                                maxlength="12"
+                                autocomplete="off"
+                            >
+                            <span class="form-hint">10-12 digit numeric registration number</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="semester" class="form-label">Semester</label>
+                            <div class="semester-grid" id="semester-grid">
+                                <button type="button" class="sem-btn" data-sem="1">I</button>
+                                <button type="button" class="sem-btn" data-sem="2">II</button>
+                                <button type="button" class="sem-btn" data-sem="3">III</button>
+                                <button type="button" class="sem-btn" data-sem="4">IV</button>
+                                <button type="button" class="sem-btn" data-sem="5">V</button>
+                                <button type="button" class="sem-btn" data-sem="6">VI</button>
+                                <button type="button" class="sem-btn" data-sem="7">VII</button>
+                                <button type="button" class="sem-btn" data-sem="8">VIII</button>
+                            </div>
+                            <input type="hidden" id="semester" value="">
+                        </div>
+                        
+                        <button type="submit" class="submit-btn" id="submit-btn">
+                            <span class="btn-text">Analyze Result</span>
+                            <span class="btn-icon">→</span>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Loading State -->
+            <section class="loading-section hidden" id="loading-section">
+                <div class="loading-card glass-card">
+                    <div class="loader-ring">
+                        <div class="ring-segment"></div>
+                        <div class="ring-segment"></div>
+                        <div class="ring-segment"></div>
+                    </div>
+                    <h3 class="loading-title" id="loading-title">Fetching your result…</h3>
+                    <p class="loading-desc" id="loading-desc">Connecting to BEU servers</p>
+                    <div class="loading-steps">
+                        <div class="step active" id="step-fetch">
+                            <div class="step-dot"></div>
+                            <span>Fetch Result</span>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step" id="step-analyze">
+                            <div class="step-dot"></div>
+                            <span>AI Analysis</span>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step" id="step-explain">
+                            <div class="step-dot"></div>
+                            <span>Generate Report</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error State -->
+            <section class="error-section hidden" id="error-section">
+                <div class="error-card glass-card">
+                    <div class="error-icon">✕</div>
+                    <h3 class="error-title">Something went wrong</h3>
+                    <p class="error-message" id="error-message"></p>
+                    <button class="retry-btn" id="retry-btn">Try Again</button>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section hidden" id="results-section">
+                <!-- Student Header Card -->
+                <div class="student-header glass-card" id="student-header">
+                    <div class="student-info">
+                        <div class="student-avatar" id="student-avatar">S</div>
+                        <div>
+                            <h2 class="student-name" id="student-name">—</h2>
+                            <p class="student-meta" id="student-meta">—</p>
+                            <p class="student-college" id="student-college">—</p>
+                        </div>
+                    </div>
+                    <div class="status-badge-container">
+                        <div class="status-badge" id="status-badge">—</div>
+                    </div>
+                </div>
+
+                <!-- Metrics Row -->
+                <div class="metrics-row">
+                    <div class="metric-card glass-card">
+                        <span class="metric-label">Percentage</span>
+                        <span class="metric-value" id="val-percentage">—</span>
+                    </div>
+                    <div class="metric-card glass-card">
+                        <span class="metric-label">SGPA</span>
+                        <span class="metric-value" id="val-sgpa">—</span>
+                    </div>
+                    <div class="metric-card glass-card">
+                        <span class="metric-label">CGPA</span>
+                        <span class="metric-value" id="val-cgpa">—</span>
+                    </div>
+                    <div class="metric-card glass-card">
+                        <span class="metric-label">Performance</span>
+                        <span class="metric-value" id="val-performance">—</span>
+                    </div>
+                </div>
+
+                <!-- AI Explanation -->
+                <div class="explanation-card glass-card" id="explanation-card">
+                    <div class="card-header">
+                        <div class="card-icon ai-icon">✦</div>
+                        <h3>AI Analysis</h3>
+                    </div>
+                    <ul class="explanation-bullets" id="explanation-bullets"></ul>
+                </div>
+
+                <!-- Subject Performance -->
+                <div class="subjects-card glass-card" id="subjects-card">
+                    <div class="card-header">
+                        <div class="card-icon subjects-icon">📊</div>
+                        <h3>Subject-wise Performance</h3>
+                    </div>
+                    <div class="chart-container" id="chart-container">
+                        <canvas id="subjects-chart"></canvas>
+                    </div>
+                    <div class="subjects-table-wrap">
+                        <table class="subjects-table" id="subjects-table">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Type</th>
+                                    <th>ESE</th>
+                                    <th>IA</th>
+                                    <th>Total</th>
+                                    <th>Grade</th>
+                                    <th>Credit</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subjects-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Insights Row -->
+                <div class="insights-row">
+                    <div class="insight-card glass-card strength-card">
+                        <div class="card-header">
+                            <div class="card-icon strength-icon">💪</div>
+                            <h3>Strengths</h3>
+                        </div>
+                        <ul class="insight-list" id="strength-list"></ul>
+                    </div>
+                    <div class="insight-card glass-card weakness-card">
+                        <div class="card-header">
+                            <div class="card-icon weakness-icon">📌</div>
+                            <h3>Needs Improvement</h3>
+                        </div>
+                        <ul class="insight-list" id="weakness-list"></ul>
+                    </div>
+                </div>
+
+                <!-- Study Tips -->
+                <div class="tips-card glass-card" id="tips-card">
+                    <div class="card-header">
+                        <div class="card-icon tips-icon">💡</div>
+                        <h3>Study Tips</h3>
+                    </div>
+                    <div class="tips-grid" id="tips-grid"></div>
+                </div>
+
+                <!-- Check Another -->
+                <button class="check-another-btn" id="check-another-btn">
+                    ← Check Another Result
+                </button>
+            </section>
+        </div>
+
+        <!-- Chat Sidebar -->
+        <aside class="chat-sidebar hidden" id="chat-sidebar">
+            <div class="chat-panel glass-card">
+                <div class="chat-header">
+                    <div class="chat-header-left">
+                        <div class="chat-avatar">✦</div>
+                        <div>
+                            <h3 class="chat-title">Ask AI</h3>
+                            <p class="chat-status">Powered by Groq</p>
+                        </div>
+                    </div>
+                    <button class="chat-close-btn" id="chat-close-btn" title="Close chat">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-welcome">
+                        <div class="chat-welcome-icon">💬</div>
+                        <p>Ask me anything about your result! For example:</p>
+                        <div class="chat-suggestions" id="chat-suggestions">
+                            <button class="suggestion-chip" data-msg="How can I improve my weakest subject?">How to improve?</button>
+                            <button class="suggestion-chip" data-msg="What study strategy should I follow for next semester?">Study strategy?</button>
+                            <button class="suggestion-chip" data-msg="Explain my SGPA and what it means">What is my SGPA?</button>
+                            <button class="suggestion-chip" data-msg="Which subjects should I focus on more?">What to focus on?</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <input 
+                        type="text" 
+                        id="chat-input" 
+                        class="chat-input" 
+                        placeholder="Ask about your result…"
+                        autocomplete="off"
+                    >
+                    <button class="chat-send-btn" id="chat-send-btn" title="Send">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Floating Chat Toggle Button (visible when results are shown) -->
+    <button class="chat-fab hidden" id="chat-fab" title="Chat with AI">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span class="fab-label">Ask AI</span>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
